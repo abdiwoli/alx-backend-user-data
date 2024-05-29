@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-from typing import List
 import re
+from typing import List
 
 
-def filter_datum(fields: List[str], redaction: str, message: str, sep: str):
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
     """ filter data """
     for field in fields:
-        pattern = rf"({field}=)([^ {sep}]*)"
-        message = re.sub(pattern, rf"\1{redaction}", message)
+        pattern = f'{field}=.*?(?={separator}|$)'
+        message = re.sub(pattern, f'{field}={redaction}', message)
     return message

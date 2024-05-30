@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+""" filter pii """
 import re
 from typing import List
 

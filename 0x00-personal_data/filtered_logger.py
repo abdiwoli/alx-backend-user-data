@@ -53,11 +53,25 @@ def get_logger() -> logging.Logger:
 def get_db() -> mysql.connector.connection.MySQLConnection:
     """ secure connection to db """
     usr = os.environ.get('PERSONAL_DATA_DB_USERNAME', "root")
-    psw = os.environ.get('PERSONAL_DATA_DB_PASSWORD', "")
+    psw = os.environ.get('PERSONAL_DATA_DB_PASSWORD', "root")
     host = os.environ.get('PERSONAL_DATA_DB_HOST', "localhost")
-    db = os.environ.get("PERSONAL_DATA_DB_NAME")
+    db = os.environ.get("PERSONAL_DATA_DB_NAME", "my_db")
 
     return mysql.connector.connection.MySQLConnection(user=usr,
                                                       password=psw,
                                                       host=host,
                                                       database=db)
+
+
+def main() -> None:
+    """  obtain a database connection using get_db """
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users;")
+    column_names = [desc[0] for desc in cursor.description]
+    logger = get_logger()
+    for row in cursor:
+        r = ''.join(f'{f}={str(r)}; ' for r, f in zip(row, column_names))
+        logger.info(r.strip())
+    cursor.close()
+    db.close()

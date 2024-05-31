@@ -29,7 +29,7 @@ class RedactingFormatter(logging.Formatter):
                             message, self.SEPARATOR)
 
 
-def filter_datum(fields: List[str], redaction: str, message: str,
+def filter_datum(fields: List[str], redaction: str, message: 
                  separator: str) -> str:
     """ filter data """
     for field in fields:
@@ -57,13 +57,10 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     host = os.environ.get('PERSONAL_DATA_DB_HOST', "localhost")
     db = os.environ.get("PERSONAL_DATA_DB_NAME", "my_db")
 
-    try:
-        return mysql.connector.connection.MySQLConnection(user=usr,
-                                                          password=psw,
-                                                          host=host,
-                                                          database=db)
-    except Exception:
-        exit(1)
+    return mysql.connector.connection.MySQLConnection(user=usr,
+                                                      password=psw,
+                                                      host=host,
+                                                      database=db)
 
 
 def main() -> None:
@@ -75,6 +72,6 @@ def main() -> None:
     logger = get_logger()
     for row in cursor:
         r = ''.join(f'{f}={str(r)}; ' for r, f in zip(row, column_names))
-        print(logger.info(r.strip()))
+        logger.info(r.strip())
     cursor.close()
     db.close()

@@ -16,6 +16,7 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 @app.route('/api/v1/unauthorized')
 def unauthorized():
+    """ abort the request """
     abort(401)
 
 

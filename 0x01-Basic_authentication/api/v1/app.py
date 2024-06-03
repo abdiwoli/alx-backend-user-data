@@ -14,12 +14,6 @@ app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 
-@app.route('/api/v1/unauthorized')
-def unauthorized():
-    """ abort the request """
-    abort(401)
-
-
 @app.errorhandler(404)
 def not_found(error) -> str:
     """ Not found handler
@@ -28,7 +22,7 @@ def not_found(error) -> str:
 
 
 @app.errorhandler(401)
-def un_authrorized(error):
+def unauthrorized(error) -> str:
     """ un authorozed """
     return jsonify({"error": "Unauthorized"}), 401
 

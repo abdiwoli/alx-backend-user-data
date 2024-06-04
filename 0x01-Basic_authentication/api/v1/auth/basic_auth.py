@@ -22,9 +22,10 @@ class BasicAuth(Auth):
         """ decode value """
         if base64_authorization_header is None:
             return None
-        if type(base64_authorization_header) != str:
+        if not (isinstance(base64_authorization_header, str)):
             return None
         try:
-            return base64.b64decode(base64_authorization_header, validate=True)
+            valu = base64.b64decode(base64_authorization_header, validate=True)
+            return valu.decode("utf-8")
         except Exception:
             return None

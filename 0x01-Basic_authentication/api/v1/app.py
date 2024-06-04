@@ -21,6 +21,7 @@ if auth:
 
 @app.before_request
 def check_authorization():
+    """ before request """
     if auth is None:
         return
     if not auth.require_auth(request.path, exclude):

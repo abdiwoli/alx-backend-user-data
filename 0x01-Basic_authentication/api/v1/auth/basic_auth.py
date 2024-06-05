@@ -61,3 +61,12 @@ class BasicAuth(Auth):
             else:
                 return None
         return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """ The last task to get the user
+        """
+        header = self.authorization_header(request)
+        token = self.extract_base64_authorization_header(header)
+        auth_token = self.decode_base64_authorization_header(token)
+        email, pswd = self.extract_user_credentials(auth_token)
+        return self.user_object_from_credentials(email, pswd)

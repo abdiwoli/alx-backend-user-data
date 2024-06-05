@@ -29,3 +29,13 @@ class BasicAuth(Auth):
             return valu.decode("utf-8")
         except Exception:
             return None
+
+    def extract_user_credentials(self, auth_header: str) -> (str, str):
+        if auth_header is None:
+            return (None, None)
+        if not isinstance(auth_header, str):
+            return (None, None)
+        if ":" not in auth_header:
+            return (None, None)
+        value = auth_header.split(":")
+        return (value[0], value[1])

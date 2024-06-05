@@ -31,6 +31,7 @@ class BasicAuth(Auth):
             return None
 
     def extract_user_credentials(self, auth_header: str) -> (str, str):
+        """ returns user and password """
         if auth_header is None:
             return (None, None)
         if not isinstance(auth_header, str):

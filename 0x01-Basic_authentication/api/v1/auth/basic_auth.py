@@ -2,6 +2,9 @@
 """api/v1/auth/basic_auth.py """
 from api.v1.auth.auth import Auth
 import base64
+from models.base import Base
+from models.user import User
+from typing import TypeVar
 
 
 class BasicAuth(Auth):
@@ -40,3 +43,21 @@ class BasicAuth(Auth):
             return (None, None)
         value = auth_header.split(":")
         return (value[0], value[1])
+
+    def user_object_from_credentials(self, user_email: str,
+                                     user_pwd: str) -> TypeVar('User'):
+        """ user object """
+        if user_email is None or user_pwd is None:
+            return None
+        if not isinstance(user_email, str) or not isinstance(user_pwd, str):
+            return None
+        user = User.search({"email": user_email})
+        if not user:
+            return None
+        if len(user) == 1:
+            user = user[0]
+            if user.is_valid_password(user_pwd):
+                return user
+            else:
+                return None
+        return None

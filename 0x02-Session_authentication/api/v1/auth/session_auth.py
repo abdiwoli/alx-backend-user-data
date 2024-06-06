@@ -20,4 +20,4 @@ class SessionAuth(Auth):
 
     def user_id_for_session_id(self, session_id: str = None) -> str:
         """ return session id"""
-        return SessionAuth.get(session_id, None)
+        return SessionAuth.user_id_by_session_id.get(session_id, None)

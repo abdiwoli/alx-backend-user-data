@@ -32,14 +32,14 @@ def check_authorization():
     """ before request """
     if auth is None:
         return
-    if not auth.require_auth(request.path, exclude):
-        return
-    if auth.authorization_header(request) is None:
-        abort(401)
-    if auth.authorization_header(request) and auth.session_cookie(request):
-        abort(403)
     request.current_user = auth.current_user(request)
-    print(request.current_user)
+    if auth.require_auth(request.path, exclude):
+        if auth.authorization_header(request) is None:
+            print("heder is authorized")
+            if auth.session_cookie(request) is None:
+                abort(401)
+    if auth.current_user(request) is None:
+        abort(403)
 
 
 @app.errorhandler(404)

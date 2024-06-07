@@ -42,7 +42,7 @@ class BasicAuth(Auth):
         if ":" not in auth_header:
             return (None, None)
         value = auth_header.split(":")
-        return (value[0], value[1])
+        return (value[0], ":".join(value[1:]))
 
     def user_object_from_credentials(self, user_email: str,
                                      user_pwd: str) -> TypeVar('User'):
@@ -51,7 +51,10 @@ class BasicAuth(Auth):
             return None
         if not isinstance(user_email, str) or not isinstance(user_pwd, str):
             return None
-        user = User.search({"email": user_email})
+        try:
+            user = User.search({"email": user_email})
+        except Exception:
+            return None
         if not user or len(user) == 0:
             return None
         if len(user) == 1:

@@ -28,18 +28,18 @@ if auth:
 
 
 @app.before_request
-def check_authorization():
-    """ before request """
-    if auth is None:
-        return
-    request.current_user = auth.current_user(request)
-    if auth.require_auth(request.path, exclude):
-        if auth.authorization_header(request) is None:
-            print("heder is authorized")
-            if auth.session_cookie(request) is None:
-                abort(401)
-    if auth.current_user(request) is None:
-        abort(403)
+def authenticate_user():
+    """Authenticates a user before processing a request.
+    """
+    if auth:
+        if auth.require_auth(request.path, exclude):
+            auth_header = auth.authorization_header(request)
+            user = auth.current_user(request)
+            if auth.authorization_header(request) is None:
+                if auth.session_cookie(request) is None:
+                    abort(401)
+            if user is None:
+                abort(403)
 
 
 @app.errorhandler(404)

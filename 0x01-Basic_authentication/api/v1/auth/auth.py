@@ -2,6 +2,7 @@
 """ api/v1/auth/auth.py """
 from flask import request
 from typing import List, TypeVar
+import fnmatch as fn
 
 
 class Auth:
@@ -12,6 +13,8 @@ class Auth:
             return True
         if not excluded_paths:
             return True
+        if any(fn.fnmatch(path, s) for s in excluded_paths):
+            return False
         if path in excluded_paths:
             return False
         if path + '/' in excluded_paths:

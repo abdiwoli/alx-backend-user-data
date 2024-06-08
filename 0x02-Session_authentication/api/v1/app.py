@@ -8,6 +8,7 @@ from flask import Flask, jsonify, abort, request
 from flask_cors import (CORS, cross_origin)
 from api.v1.auth.session_auth import SessionAuth
 from api.v1.auth.session_exp_auth import SessionExpAuth
+from api.v1.auth.session_db_auth import SessionDBAuth
 import os
 
 
@@ -25,6 +26,8 @@ if auth:
         auth = SessionAuth()
     elif auth == "session_exp_auth":
         auth = SessionExpAuth()
+    elif auth == "session_db_auth":
+        auth = SessionDBAuth()
     else:
         from api.v1.auth.basic_auth import Auth
         auth = Auth()

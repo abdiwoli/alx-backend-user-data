@@ -9,6 +9,7 @@ import os
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
 def session_auth():
+    """ session route """
     email = request.form.get("email")
     pswd = request.form.get("password")
     user = None

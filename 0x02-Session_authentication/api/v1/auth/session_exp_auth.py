@@ -12,12 +12,14 @@ from datetime import datetime, timedelta
 class SessionExpAuth(SessionAuth):
     """ session expr class """
     def __init__(self):
+        """ init method """
         try:
             self.session_duration = int(os.environ.get('SESSION_DURATION'), 0)
         except Exception:
             self.session_duration = 0
 
     def create_session(self, user_id=None):
+        """ create session """
         ses_id = super().create_session(user_id)
         if ses_id is None:
             return None

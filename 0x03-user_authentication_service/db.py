@@ -1,14 +1,12 @@
-#!/usr/bin/env python3
-"""DB module
-"""
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.session import Session
+from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError, MultipleResultsFound
 from user import User
-from typing import TypeVar
 
-from user import Base
+
+Base = declarative_base()
 
 
 class DB:
@@ -32,9 +30,26 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
-    def add_user(self, email:str, hashed_password:str) -> User:
-        """ add to teh database """
-        user = User(email=email, hashed_password=hashed_password)
+    def add_user(self, email: str, hashed_password: str) -> User:
+        """Add to the database"""
+        try:
+            user = User(email=email, hashed_password=hashed_password)
+        except Exception as e:
+            print(f"Error adding user to database: {e}")
+            self._session.rollback()
+            raise
         self._session.add(user)
         self._session.commit()
         return user
+
+    def find_user_by(self, **kwargs) -> User:
+        """Find user by arbitrary keyword arguments"""
+        try:
+            user = self._session.query(User).filter_by(**kwargs).one()
+            return user
+        except NoResultFound:
+            raise NoResultFound(f"No user found with criteria: {kwargs}")
+        except MultipleResultsFound as e:
+            raise InvalidRequestError()
+        except InvalidRequestError:
+            raise InvalidRequestError()

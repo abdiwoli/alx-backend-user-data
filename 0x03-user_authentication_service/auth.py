@@ -5,6 +5,7 @@ from db import DB
 from user import User
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
+import uuid
 
 
 def _hash_password(password: str) -> bytes:
@@ -18,6 +19,7 @@ class Auth:
     """
 
     def __init__(self):
+        """ init class """
         self._db = DB()
 
     def register_user(self, email: str, psw: str) -> User:
@@ -42,3 +44,18 @@ class Auth:
                 return False
         except (NoResultFound, InvalidRequestError):
             return False
+
+    def _generate_uuid(self) -> str:
+        """ return new uuid """
+        return str(uuid.uuid4())
+
+    def create_session(self, email: str) -> str:
+        """ return session id """
+        try:
+            user = self._db.find_user_by(email=email)
+            if user:
+                user.session_id = self._generate_uuid()
+                self._db._session.commit()
+                return user.session_id
+        except (NoResultFound, InvalidRequestError):
+            return None

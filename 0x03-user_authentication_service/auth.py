@@ -70,6 +70,13 @@ class Auth:
         except (NoResultFound, InvalidRequestError):
             return None
 
+    def gey_user(self, **kwargs: dict) -> User:
+        """ get user by email """
+        try:
+            return self._db.find_user_by(**kwargs)
+        except (NoResultFound, InvalidRequestError):
+            return None
+
     def destroy_session(self, user_id: int) -> None:
         """ destroy user session """
         try:
@@ -79,3 +86,25 @@ class Auth:
                 self._db._session.commit()
         except (NoResultFound, InvalidRequestError):
             return None
+
+    def get_reset_password_token(self, email: str) -> str:
+        """ reset password """
+        user = self.get_user(email=email)
+        if user:
+            user.reset_token = _generate_uuid()
+            self._db._session.commit()
+            return user.reset_token
+        else:
+            raise ValueError
+
+    def update_password(self, reset_token: str, password: str) -> None:
+        """ update password """
+        user = self.get_user_email(reset_token=reset_token)
+        if user:
+            hashed_password = _hash_password(password)
+            self.db_update(user.id, password=hashed_password)
+            self.reset_token = None
+            self._db._session.commit()
+            return
+        else:
+            raise ValueError

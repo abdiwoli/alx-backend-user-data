@@ -13,7 +13,7 @@ app = Flask(__name__)
 @app.route("/")
 def main():
     """ main """
-    return jsonify({"message": "Bienvenue"})
+    return jsonify({"message": "Bienvenue"}), 200
 
 
 @app.route('/users', methods=["POST"], strict_slashes=False)
@@ -47,9 +47,10 @@ def login():
 def logout():
     """ logout function """
     session_id = request.cookies.get('session_id')
-    if AUTH.get_user_from_session_id(session_id):
-        AUTH.destroy_session(session_id)
-        redirect('/')
+    if session_id:
+        if AUTH.get_user_from_session_id(session_id):
+            AUTH.destroy_session(session_id)
+        return redirect('/')
     else:
         abort(403)
 
@@ -82,11 +83,8 @@ def update_password():
     reset_token = request.form.get('reset_token')
     password = request.form.get('new_password')
     if password:
-        try:
-            AUTH.update_password(reset_token)
-            return jsonify({"email": email, "message": "Password updated"})
-        except ValueError:
-            abort(403)
+        AUTH.update_password(reset_token, password)
+        return jsonify({"email": email, "message": "Password updated"})
     abort(403)
 
 

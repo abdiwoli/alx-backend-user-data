@@ -70,7 +70,7 @@ class Auth:
         except (NoResultFound, InvalidRequestError):
             return None
 
-    def gey_user(self, **kwargs: dict) -> User:
+    def get_user(self, **kwargs: dict) -> User:
         """ get user by email """
         try:
             return self._db.find_user_by(**kwargs)
@@ -99,10 +99,10 @@ class Auth:
 
     def update_password(self, reset_token: str, password: str) -> None:
         """ update password """
-        user = self.get_user_email(reset_token=reset_token)
+        user = self.get_user(reset_token=reset_token)
         if user:
             hashed_password = _hash_password(password)
-            self.db_update(user.id, password=hashed_password)
+            self._db.update_user(user.id, hashed_password=hashed_password)
             self.reset_token = None
             self._db._session.commit()
             return

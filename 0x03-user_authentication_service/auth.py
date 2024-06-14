@@ -25,6 +25,7 @@ class Auth:
     def __init__(self):
         """ init class """
         self._db = DB()
+        self._session = session = self._db._session
 
     def register_user(self, email: str, password: str) -> User:
         """ register user """
@@ -36,8 +37,8 @@ class Auth:
         except (NoResultFound, InvalidRequestError):
             pass
         user = User(email=email, hashed_password=hashed)
-        self._db._session.add(user)
-        self._db._session.commit()
+        self._session.add(user)
+        self._session.commit()
         return user
 
     def valid_login(self, email: str, password: str) -> bool:

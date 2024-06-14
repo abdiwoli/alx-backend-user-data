@@ -91,8 +91,8 @@ class Auth:
         """ reset password """
         user = self.get_user(email=email)
         if user:
-            user.reset_token = _generate_uuid()
-            self._db._session.commit()
+            reset_token = _generate_uuid()
+            self._db.update_user(user.id, reset_token=reset_token)
             return user.reset_token
         else:
             raise ValueError
@@ -102,9 +102,9 @@ class Auth:
         user = self.get_user(reset_token=reset_token)
         if user:
             hashed_password = _hash_password(password)
-            self._db.update_user(user.id, hashed_password=hashed_password)
-            self.reset_token = None
-            self._db._session.commit()
+            self._db.update_user(user.id,
+                                 hashed_password=hashed_password,
+                                 reset_token=None)
             return
         else:
             raise ValueError

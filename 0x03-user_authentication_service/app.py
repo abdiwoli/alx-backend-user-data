@@ -21,8 +21,6 @@ def users():
     """ users endpoint """
     email = request.form.get('email')
     password = request.form.get('password')
-    if not email or password is None:
-        return jsonify({"error": "Invalid input"}), 400
     try:
         user = AUTH.register_user(email, password)
         return jsonify({"email": email, "message": "user created"})

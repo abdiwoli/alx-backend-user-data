@@ -30,8 +30,7 @@ class Auth:
         """ register user """
         try:
             user: User = self._db.find_user_by(email=email)
-            if user:
-                raise ValueError(f'User {email} already exists')
+            raise ValueError(f'User {email} already exists')
         except (NoResultFound, InvalidRequestError):
             pass
         hashed = _hash_password(password)

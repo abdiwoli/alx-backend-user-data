@@ -81,8 +81,7 @@ class Auth:
         try:
             user = self._db.find_user_by(id=user_id)
             if user:
-                user.session_id = None
-                self._db._session.commit()
+                self._db.update_user(user.id, reset_token=None)
         except (NoResultFound, InvalidRequestError):
             return None
 

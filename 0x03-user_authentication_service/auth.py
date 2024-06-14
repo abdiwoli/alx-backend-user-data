@@ -28,14 +28,14 @@ class Auth:
 
     def register_user(self, email: str, password: str) -> User:
         """ register user """
+        hashed = _hash_password(password)
         try:
             user: User = self._db.find_user_by(email=email)
             if user:
                 raise ValueError(f'User {email} already exists')
         except (NoResultFound, InvalidRequestError):
-            hashed = _hash_password(password)
-            return self._db.add_user(email, hashed)
-        return
+            pass
+        return self._db.add_user(email, hashed)
 
     def valid_login(self, email: str, password: str) -> bool:
         """ validate login or user """

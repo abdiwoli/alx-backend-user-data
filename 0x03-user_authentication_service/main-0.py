@@ -4,7 +4,7 @@ Main file
 """
 from auth import Auth
 
-email = 'me9@me.com'
+email = 'me91@me.com'
 password = 'mySecuredPwd'
 
 auth = Auth()

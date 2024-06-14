@@ -37,6 +37,7 @@ class Auth:
             pass
         user = User(email=email, hashed_password=hashed)
         self._db._session.add(user)
+        self._db._session.commit()
         return user
 
     def valid_login(self, email: str, password: str) -> bool:

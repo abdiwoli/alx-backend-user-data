@@ -88,12 +88,12 @@ class Auth:
             return None
 
     def get_reset_password_token(self, email: str) -> str:
-        """ reset password """
+        """ reset password token """
         user = self.get_user(email=email)
         if user:
             reset_token = _generate_uuid()
             self._db.update_user(user.id, reset_token=reset_token)
-            return user.reset_token
+            return reset_token
         else:
             raise ValueError
 
@@ -105,6 +105,5 @@ class Auth:
             self._db.update_user(user.id,
                                  hashed_password=hashed_password,
                                  reset_token=None)
-            return
         else:
             raise ValueError

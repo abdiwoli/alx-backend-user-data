@@ -25,20 +25,17 @@ class Auth:
     def __init__(self):
         """ init class """
         self._db = DB()
-        self._session = session = self._db._session
 
     def register_user(self, email: str, password: str) -> User:
         """ register user """
-        hashed = _hash_password(password)
         try:
             user: User = self._db.find_user_by(email=email)
             if user:
                 raise ValueError(f'User {email} already exists')
         except (NoResultFound, InvalidRequestError):
             pass
-        user = User(email=email, hashed_password=hashed)
-        self._session.add(user)
-        self._session.commit()
+        hashed = _hash_password(password)
+        user = self._db.add_user(email, hashed)
         return user
 
     def valid_login(self, email: str, password: str) -> bool:

@@ -10,8 +10,7 @@ import uuid
 
 def _hash_password(password: str) -> bytes:
     """ returns bytes """
-    utf = password.encode()
-    return bcrypt.hashpw(utf, bcrypt.gensalt())
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
 
 
 def _generate_uuid() -> str:
@@ -27,14 +26,14 @@ class Auth:
         """ init class """
         self._db = DB()
 
-    def register_user(self, email: str, psw: str) -> User:
+    def register_user(self, email: str, password: str) -> User:
         """ register user """
         try:
-            user = self._db.find_user_by(email=email)
+            user: User = self._db.find_user_by(email=email)
             if user:
                 raise ValueError(f'User {email} already exists')
         except (NoResultFound, InvalidRequestError):
-            hashed = _hash_password(psw)
+            hashed = _hash_password(password)
             return self._db.add_user(email, hashed)
         return
 

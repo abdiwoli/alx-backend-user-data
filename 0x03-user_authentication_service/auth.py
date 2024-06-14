@@ -55,10 +55,10 @@ class Auth:
         try:
             user = self._db.find_user_by(email=email)
             if user:
-                user.session_id = _generate_uuid()
-                self._db._session.commit()
-                return user.session_id
-        except (NoResultFound, InvalidRequestError):
+                session_id = _generate_uuid()
+                self._db.update_user(user.id, session_id=session_id)
+                return session_id
+        except (ValueError, NoResultFound, InvalidRequestError):
             return None
 
     def get_user_from_session_id(self, session_id: str) -> User:
